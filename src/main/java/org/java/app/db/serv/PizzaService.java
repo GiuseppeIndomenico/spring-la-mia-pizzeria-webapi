@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PizzaService {
@@ -13,16 +14,12 @@ public class PizzaService {
 	@Autowired
 	private PizzaRepo pizzaRepo;
 
-	public void save(Pizza pizza) {
-		pizzaRepo.save(pizza);
+	public Pizza save(Pizza pizza) {
+		return pizzaRepo.save(pizza);
 	}
 
 	public List<Pizza> findAll() {
 		return pizzaRepo.findAll();
-	}
-
-	public Pizza findById(int id) {
-		return pizzaRepo.findById(id).orElse(null);
 	}
 
 	public List<Pizza> findPizzeByNome(String nome) {
@@ -32,4 +29,9 @@ public class PizzaService {
 	public void deletePizza(Pizza pizza) {
 		pizzaRepo.delete(pizza);
 	}
+
+	public Optional<Pizza> findById(int id) {
+		return pizzaRepo.findById(id);
+	}
+
 }

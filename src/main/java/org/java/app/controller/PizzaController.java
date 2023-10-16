@@ -2,6 +2,7 @@ package org.java.app.controller;
 
 import java.util.List;
 
+
 import org.java.app.db.pojo.Ingrediente;
 import org.java.app.db.pojo.OffertaSpeciale;
 import org.java.app.db.pojo.Pizza;
@@ -50,16 +51,16 @@ public class PizzaController {
 
 	@GetMapping("/{id}")
 	public String getShow(@PathVariable int id, Model model) {
-		Pizza pizza = pizzaService.findById(id);
-		if (pizza == null) {
+		Pizza pizza = pizzaService.findById(id).orElse(null);
+
+		if (pizza != null) {
+			OffertaSpeciale offertaSpeciale = offertaSpecialeService.findByPizza(pizza);
+			model.addAttribute("offertaSpeciale", offertaSpeciale);
+			model.addAttribute("pizza", pizza);
+			return "pizza-show";
+		} else {
 			return "pizza-nothing";
 		}
-
-		OffertaSpeciale offertaSpeciale = offertaSpecialeService.findByPizza(pizza);
-		model.addAttribute("offertaSpeciale", offertaSpeciale);
-
-		model.addAttribute("pizza", pizza);
-		return "pizza-show";
 	}
 
 	@GetMapping("/search")
@@ -110,9 +111,9 @@ public class PizzaController {
 
 	@GetMapping("/update/{id}")
 	public String getUpdateForm(@PathVariable int id, Model model) {
-		Pizza pizza = pizzaService.findById(id);
+		Pizza pizza = pizzaService.findById(id).orElse(null);
 		List<Ingrediente> allIngredienti = ingredienteService.findAll();
-		List<Ingrediente> pizzaIngredienti = pizza.getIngredienti();
+		List<Ingrediente> pizzaIngredienti = (pizza != null) ? pizza.getIngredienti() : null;
 
 		model.addAttribute("pizza", pizza);
 		model.addAttribute("allIngredienti", allIngredienti);
@@ -120,74 +121,74 @@ public class PizzaController {
 
 		return "pizza-update";
 	}
-
-	@PostMapping("/update/{id}")
-	public String updatePizza(@Valid @ModelAttribute Pizza updatedPizza, BindingResult bindingResult, Model model) {
-
-		if (bindingResult.hasErrors()) {
-			return "pizza-update";
-		}
-		Pizza existingPizza = pizzaService.findById(updatedPizza.getId());
-
-		existingPizza.setNome(updatedPizza.getNome());
-		existingPizza.setDescrizione(updatedPizza.getDescrizione());
-		existingPizza.setFoto(updatedPizza.getFoto());
-		existingPizza.setPrezzo(updatedPizza.getPrezzo());
-		existingPizza.setIngredienti(updatedPizza.getIngredienti());
-
-		pizzaService.save(existingPizza);
-
-		return "redirect:/pizze";
-	}
+//
+//	@PostMapping("/update/{id}")
+//	public String updatePizza(@Valid @ModelAttribute Pizza updatedPizza, BindingResult bindingResult, Model model) {
+//
+//		if (bindingResult.hasErrors()) {
+//			return "pizza-update";
+//		}
+//		Pizza existingPizza = pizzaService.findById(updatedPizza.getId());
+//
+//		existingPizza.setNome(updatedPizza.getNome());
+//		existingPizza.setDescrizione(updatedPizza.getDescrizione());
+//		existingPizza.setFoto(updatedPizza.getFoto());
+//		existingPizza.setPrezzo(updatedPizza.getPrezzo());
+//		existingPizza.setIngredienti(updatedPizza.getIngredienti());
+//
+//		pizzaService.save(existingPizza);
+//
+//		return "redirect:/pizze";
+//	}
 
 	// Offerte
 
-	@GetMapping("/offerta/create")
-	public String getOffertaCreateForm(Model model) {
-		List<Pizza> pizze = pizzaService.findAll();
-		model.addAttribute("pizze", pizze);
-		model.addAttribute("offertaSpeciale", new OffertaSpeciale());
-		return "offerta-create";
-	}
-
-	@PostMapping("/offerta/create")
-	public String createOffertaSpeciale(@Valid @ModelAttribute OffertaSpeciale offertaSpeciale,
-			BindingResult bindingResult, Model model) {
-		if (bindingResult.hasErrors()) {
-			return "offerta-create";
-		}
-		int pizzaId = offertaSpeciale.getPizza().getId();
-		Pizza pizza = pizzaService.findById(pizzaId);
-		offertaSpeciale.setPizza(pizza);
-		offertaSpecialeService.save(offertaSpeciale);
-
-		return "redirect:/pizze/" + pizzaId;
-	}
-
-	@GetMapping("/offerta/update/{offertaId}")
-	public String getOffertaUpdateForm(@PathVariable int offertaId, Model model) {
-		OffertaSpeciale offertaSpeciale = offertaSpecialeService.findById(offertaId);
-
-		model.addAttribute("offertaSpeciale", offertaSpeciale);
-
-		return "offerta-update";
-	}
-
-	@PostMapping("/offerta/update/{offertaId}")
-	public String updateOffertaSpeciale(@PathVariable int offertaId,
-			@Valid @ModelAttribute OffertaSpeciale offertaSpeciale, @RequestParam("pizzaId") int pizzaId,
-			BindingResult bindingResult, Model model) {
-		if (bindingResult.hasErrors()) {
-			return "offerta-update";
-		}
-
-		Pizza pizza = pizzaService.findById(pizzaId);
-		offertaSpeciale.setPizza(pizza);
-
-		offertaSpeciale.setId(offertaId);
-		offertaSpecialeService.save(offertaSpeciale);
-
-		return "redirect:/pizze/" + pizzaId;
-	}
+//	@GetMapping("/offerta/create")
+//	public String getOffertaCreateForm(Model model) {
+//		List<Pizza> pizze = pizzaService.findAll();
+//		model.addAttribute("pizze", pizze);
+//		model.addAttribute("offertaSpeciale", new OffertaSpeciale());
+//		return "offerta-create";
+//	}
+//
+//	@PostMapping("/offerta/create")
+//	public String createOffertaSpeciale(@Valid @ModelAttribute OffertaSpeciale offertaSpeciale,
+//			BindingResult bindingResult, Model model) {
+//		if (bindingResult.hasErrors()) {
+//			return "offerta-create";
+//		}
+//		int pizzaId = offertaSpeciale.getPizza().getId();
+//		Pizza pizza = pizzaService.findById(pizzaId);
+//		offertaSpeciale.setPizza(pizza);
+//		offertaSpecialeService.save(offertaSpeciale);
+//
+//		return "redirect:/pizze/" + pizzaId;
+//	}
+//
+//	@GetMapping("/offerta/update/{offertaId}")
+//	public String getOffertaUpdateForm(@PathVariable int offertaId, Model model) {
+//		OffertaSpeciale offertaSpeciale = offertaSpecialeService.findById(offertaId);
+//
+//		model.addAttribute("offertaSpeciale", offertaSpeciale);
+//
+//		return "offerta-update";
+//	}
+//
+//	@PostMapping("/offerta/update/{offertaId}")
+//	public String updateOffertaSpeciale(@PathVariable int offertaId,
+//			@Valid @ModelAttribute OffertaSpeciale offertaSpeciale, @RequestParam("pizzaId") int pizzaId,
+//			BindingResult bindingResult, Model model) {
+//		if (bindingResult.hasErrors()) {
+//			return "offerta-update";
+//		}
+//
+//		Pizza pizza = pizzaService.findById(pizzaId);
+//		offertaSpeciale.setPizza(pizza);
+//
+//		offertaSpeciale.setId(offertaId);
+//		offertaSpecialeService.save(offertaSpeciale);
+//
+//		return "redirect:/pizze/" + pizzaId;
+//	}
 
 }

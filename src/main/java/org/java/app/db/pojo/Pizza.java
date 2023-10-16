@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
+import org.java.app.api.dto.PizzaDTO;
 
 @Entity
 public class Pizza {
@@ -32,17 +33,14 @@ public class Pizza {
 
 	private String foto;
 
-	
-	@OneToMany(mappedBy= "pizza")
-	  private List<OffertaSpeciale> offertaSpeciale;
-	
+	@OneToMany(mappedBy = "pizza")
+	private List<OffertaSpeciale> offertaSpeciale;
+
 	@ManyToMany
 	private List<Ingrediente> ingredienti;
-	
+
 	public Pizza() {
 	}
-
-
 
 	public Pizza(String nome, String descrizione, String foto, int prezzo, Ingrediente... ingredienti) {
 
@@ -51,8 +49,22 @@ public class Pizza {
 		setFoto(foto);
 		setPrezzo(prezzo);
 		setIngredienti(Arrays.asList(ingredienti));
-		
 
+	}
+
+	public Pizza(PizzaDTO pizzaDto) {
+		setNome(pizzaDto.getNome());
+		setDescrizione(pizzaDto.getDescrizione());
+		setFoto(pizzaDto.getFoto());
+		setPrezzo(pizzaDto.getPrezzo());
+	}
+	
+	public void fillFromPizzaDto(PizzaDTO pizzaDto) {
+		
+		setNome(pizzaDto.getNome());
+		setDescrizione(pizzaDto.getDescrizione());
+		setFoto(pizzaDto.getFoto());
+		setPrezzo(pizzaDto.getPrezzo());
 	}
 
 	public int getId() {
@@ -94,7 +106,7 @@ public class Pizza {
 	public void setPrezzo(int prezzo) {
 		this.prezzo = prezzo;
 	}
-	
+
 	public List<Ingrediente> getIngredienti() {
 		return ingredienti;
 	}
