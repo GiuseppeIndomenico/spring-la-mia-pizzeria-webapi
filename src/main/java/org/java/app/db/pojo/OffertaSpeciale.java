@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class OffertaSpeciale {
 	@Id
@@ -25,6 +27,7 @@ public class OffertaSpeciale {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
+	@JsonBackReference
 	private Pizza pizza;
 
 	public OffertaSpeciale() {};

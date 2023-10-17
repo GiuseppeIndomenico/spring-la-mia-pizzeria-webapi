@@ -15,6 +15,8 @@ import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.java.app.api.dto.PizzaDTO;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Pizza {
 	@Id
@@ -34,9 +36,11 @@ public class Pizza {
 	private String foto;
 
 	@OneToMany(mappedBy = "pizza")
+	@JsonManagedReference
 	private List<OffertaSpeciale> offertaSpeciale;
 
 	@ManyToMany
+	@JsonManagedReference
 	private List<Ingrediente> ingredienti;
 
 	public Pizza() {

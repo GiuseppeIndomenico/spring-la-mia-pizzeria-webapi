@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/pizze")
+@RequestMapping("/api/v1.0")
 public class PizzaRestController {
 
 	@Autowired

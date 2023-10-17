@@ -12,13 +12,17 @@ public class PizzaDTO {
 
 	private String foto;
 
-	public PizzaDTO() {}
-	
-	public PizzaDTO(String nome) {
-		
-		setNome(nome);
+	public PizzaDTO() {
 	}
 
+	public PizzaDTO(String nome) {
+
+		setNome(nome);
+		setDescrizione(descrizione);
+		setFoto(foto);
+		setPrezzo(prezzo);
+
+	}
 
 	public int getId() {
 		return id;
@@ -59,7 +63,6 @@ public class PizzaDTO {
 	public void setPrezzo(int prezzo) {
 		this.prezzo = prezzo;
 	}
-
 
 	@Override
 	public String toString() {
